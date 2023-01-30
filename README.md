@@ -1,5 +1,7 @@
 # flymake-ruff
 
+[![MELPA](https://melpa.org/packages/flymake-ruff-badge.svg)](https://melpa.org/#/flymake-ruff)
+
 Flymake plugin to run a linter for python buffers using [ruff](https://github.com/charliermarsh/ruff)
 
 ## Installation
@@ -13,6 +15,13 @@ Clone this repo somewhere, and add this to your config:
 
 (require 'flymake-ruff)
 (add-hook 'python-mode-hook #'flymake-ruff-load)
+```
+
+### Using use-package
+
+```emacs-lisp
+(use-package flymake-ruff
+  :ensure t)
 ```
 
 ### Using straight.el
