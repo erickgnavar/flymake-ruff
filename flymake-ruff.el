@@ -44,7 +44,8 @@
           (let* ((line (buffer-substring (match-beginning 2) (match-end 2)))
                  (col (buffer-substring (match-beginning 3) (match-end 3)))
                  (code (buffer-substring (match-beginning 4) (match-end 4)))
-                 (description (buffer-substring (match-beginning 5) (match-end 5)))
+                 (description (concat "Ruff: "
+                                      (buffer-substring (match-beginning 5) (match-end 5))))
                  (region (flymake-diag-region code-buffer (string-to-number line) (string-to-number col)))
                  (dx (flymake-make-diagnostic code-buffer (car region) (cdr region) :error description)))
             (add-to-list 'dxs dx)))))
