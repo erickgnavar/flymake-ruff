@@ -5,7 +5,7 @@
 ;; URL: https://github.com/erickgnavar/flymake-ruff
 ;; Version: 0.1.0
 ;; SPDX-License-Identifier: GPL-3.0-or-later
-;; Package-Requires: ((emacs "26.1"))
+;; Package-Requires: ((emacs "26.1") (project "0.3.0"))
 
 ;;; Commentary:
 
@@ -20,14 +20,25 @@
 
 ;;; Code:
 
+(require 'project)
+
 (defcustom flymake-ruff-program "ruff"
   "Path to program ruff."
   :group 'flymake-ruff
   :type 'string)
 
+(defcustom flymake-ruff-program-args
+  '("--format" "text" "--exit-zero" "--quiet" "-")
+  "Flags to be given to \"ruff\"."
+  :group 'flymake-ruff
+  :type '(list string))
+
 (defvar flymake-ruff--output-regex "\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\([A-Z0-9]+\\) \\(.*\\)")
 
-;;TODO: check if exist a config file like pyproject.toml or ruff.toml and use it with --config=path arg
+(defconst flymake-ruff--default-configs
+  '("pyproject.toml" "ruff.toml" ".ruff.toml")
+  "Default configuration files supported by Ruff.")
+
 (defun flymake-ruff--check-buffer ()
   "Generate a list of diagnostics for the current buffer."
   (let ((code-buffer (current-buffer))
@@ -35,9 +46,19 @@
         (dxs '()))
     (with-temp-buffer
       (insert code-content)
-      ;; call-process-region will run the program and replace current buffer
-      ;; with its stdout, that's why we need to run it in a temporary buffer
-      (call-process-region (point-min) (point-max) flymake-ruff-program t t nil "--format" "text" "--exit-zero" "--quiet" "-")
+      (let* ((config (seq-find
+                      #'file-readable-p
+                      (mapcar
+                       (lambda (f)
+                         (expand-file-name f (project-root (project-current))))
+                       flymake-ruff--default-configs)))
+             (args (if config
+                       (append `("--config" ,config)
+                               flymake-ruff-program-args)
+                     flymake-ruff-program-args)))
+        ;; call-process-region will run the program and replace current buffer
+        ;; with its stdout, that's why we need to run it in a temporary buffer
+        (apply #'call-process-region (point-min) (point-max) flymake-ruff-program t t nil args))
       (goto-char (point-min))
       (while (search-forward-regexp flymake-ruff--output-regex (point-max) t)
         (when (match-string 2)
