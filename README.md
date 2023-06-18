@@ -34,3 +34,20 @@ Clone this repo somewhere, and add this to your config:
              :host github
              :repo "erickgnavar/flymake-ruff"))
 ```
+
+## Using flymake-ruff with eglot
+
+To use flymake-ruff together with eglot, you should add `flymake-ruff-load` to
+`eglot-managed-mode-hook` instead.   For example:
+
+```emacs-lisp
+(add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
+```
+
+Or, if you use use-package:
+
+```emacs-lisp
+(use-package flymake-ruff
+  :ensure t
+  :hook (eglot-managed-mode . flymake-ruff-load))
+```
