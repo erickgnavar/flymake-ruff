@@ -21,7 +21,8 @@ Clone this repo somewhere, and add this to your config:
 
 ```emacs-lisp
 (use-package flymake-ruff
-  :ensure t)
+  :ensure t
+  :hook (python-mode . flymake-ruff-load))
 ```
 
 ### Using straight.el
