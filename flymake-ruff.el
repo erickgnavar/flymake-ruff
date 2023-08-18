@@ -36,7 +36,7 @@
 (defvar flymake-ruff--output-regex "\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\([A-Z0-9]+\\) \\(.*\\)")
 
 (defconst flymake-ruff--default-configs
-  '("pyproject.toml" "ruff.toml" ".ruff.toml")
+  '("ruff.toml" ".ruff.toml" "pyproject.toml" )
   "Default configuration files supported by Ruff.")
 
 (defun flymake-ruff--check-buffer ()
