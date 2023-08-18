@@ -77,7 +77,8 @@
 (defun flymake-ruff-load ()
   "Load hook for the current buffer to tell flymake to run checker."
   (interactive)
-  (add-hook 'flymake-diagnostic-functions #'flymake-ruff--run-checker nil t))
+  (when (derived-mode-p 'python-mode 'python-ts-mode)
+    (add-hook 'flymake-diagnostic-functions #'flymake-ruff--run-checker nil t)))
 
 (defun flymake-ruff--run-checker (report-fn &rest _args)
   "Run checker using REPORT-FN."
