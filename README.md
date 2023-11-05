@@ -4,6 +4,8 @@
 
 Flymake plugin to run a linter for python buffers using [ruff](https://github.com/charliermarsh/ruff)
 
+> Make sure you have at least `ruff` `0.1.0` version because there is a [breaking change](https://github.com/astral-sh/ruff/blob/main/BREAKING_CHANGES.md#010) in the output format flag
+
 ## Installation
 
 ### Cloning the repo
