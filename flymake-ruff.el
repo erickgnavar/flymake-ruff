@@ -28,7 +28,7 @@
   :type 'string)
 
 (defcustom flymake-ruff-program-args
-  '("--format" "text" "--exit-zero" "--quiet" "-")
+  '("--output-format" "text" "--exit-zero" "--quiet" "-")
   "Flags to be given to \"ruff\"."
   :group 'flymake-ruff
   :type '(list string))
