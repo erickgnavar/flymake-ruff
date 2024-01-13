@@ -46,12 +46,16 @@
         (dxs '()))
     (with-temp-buffer
       (insert code-content)
-      (let* ((config (seq-find
-                      #'file-readable-p
-                      (mapcar
-                       (lambda (f)
-                         (expand-file-name f (project-root (project-current))))
-                       flymake-ruff--default-configs)))
+      ;; check if the current buffer belongs to a project before
+      ;; trying to build a path using `project-current' otherwise it
+      ;; will fail silently
+      (let* ((config (and (project-current)
+                          (seq-find
+                           #'file-readable-p
+                           (mapcar
+                            (lambda (f)
+                              (expand-file-name f (project-root (project-current))))
+                            flymake-ruff--default-configs))))
              (args (if config
                        (append `("--config" ,config)
                                flymake-ruff-program-args)
