@@ -53,3 +53,23 @@ Or, if you use use-package:
   :ensure t
   :hook (eglot-managed-mode . flymake-ruff-load))
 ```
+
+## Excluding Pyright diagnostic notes
+
+Pyright has some diagnostic notes that overlap with diagnostics provided by
+ruff. These diagnostic notes can't be disabled via Pyright's config, but you can
+exclude them by adding a filter to `eglot--report-to-flymake`. For example, to
+remove Pyright's "variable not accessed" notes, add the following:
+
+```emacs-lisp
+(defun my-filter-eglot-diagnostics (diags)
+    "Drop Pyright 'variable not accessed' notes from DIAGS."
+    (list (seq-remove (lambda (d)
+                        (and (eq (flymake-diagnostic-type d) 'eglot-note)
+                             (s-starts-with? "Pyright:" (flymake-diagnostic-text d))
+                             (s-ends-with? "is not accessed" (flymake-diagnostic-text d))))
+                      (car diags))))
+
+(advice-add 'eglot--report-to-flymake :filter-args #'my-filter-eglot-diagnostics))
+```
+
