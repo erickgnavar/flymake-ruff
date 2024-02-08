@@ -42,7 +42,9 @@
 (defun flymake-ruff--check-buffer ()
   "Generate a list of diagnostics for the current buffer."
   (let ((code-buffer (current-buffer))
-        (code-content (buffer-substring-no-properties (point-min) (point-max)))
+        (start-line (line-number-at-pos (point-min) t))
+        (code-content (without-restriction
+                        (buffer-substring-no-properties (point-min) (point-max))))
         (dxs '()))
     (with-temp-buffer
       (insert code-content)
@@ -71,7 +73,7 @@
                  (code (match-string 4))
                  (msg (match-string 5))
                  (description (format "Ruff: %s %s" code msg))
-                 (region (flymake-diag-region code-buffer line col))
+                 (region (flymake-diag-region code-buffer (1+ (- line start-line)) col))
                  (dx (flymake-make-diagnostic code-buffer (car region) (cdr region)
                                               :error description)))
             (add-to-list 'dxs dx)))))
