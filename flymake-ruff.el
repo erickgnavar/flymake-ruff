@@ -59,8 +59,14 @@
                               (expand-file-name f (project-root (project-current))))
                             flymake-ruff--default-configs))))
              (args (if config
-                       (append `("--config" ,config)
-                               flymake-ruff-program-args)
+                       ;; for version > 0.5 the work "check" is
+                       ;; included so we need to extract it and put it
+                       ;; before --config argument
+                       (if (member "check" flymake-ruff-program-args)
+                           (append `("check" "--config" ,config)
+                                   (cdr flymake-ruff-program-args))
+                         (append `("--config" ,config)
+                                 flymake-ruff-program-args))
                      flymake-ruff-program-args)))
         ;; call-process-region will run the program and replace current buffer
         ;; with its stdout, that's why we need to run it in a temporary buffer
