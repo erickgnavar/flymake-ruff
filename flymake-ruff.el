@@ -33,7 +33,7 @@
   :group 'flymake-ruff
   :type '(list string))
 
-(defvar flymake-ruff--output-regex "\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\([A-Z0-9]+\\) \\(.*\\)")
+(defvar flymake-ruff--output-regex "\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\([A-Za-z0-9]+\\):? \\(.*\\)")
 
 (defconst flymake-ruff--default-configs
   '(".ruff.toml" "ruff.toml" "pyproject.toml")
