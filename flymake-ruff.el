@@ -42,6 +42,7 @@
 (defun flymake-ruff--check-buffer ()
   "Generate a list of diagnostics for the current buffer."
   (let ((code-buffer (current-buffer))
+        (code-filename (buffer-file-name))
         (start-line (line-number-at-pos (point-min) t))
         (code-content (without-restriction
                         (buffer-substring-no-properties (point-min) (point-max))))
@@ -67,7 +68,10 @@
                                    (cdr flymake-ruff-program-args))
                          (append `("--config" ,config)
                                  flymake-ruff-program-args))
-                     flymake-ruff-program-args)))
+                     flymake-ruff-program-args))
+             (args (if code-filename
+                       (append `("--stdin-filename" ,code-filename) args)
+                     args)))
         ;; call-process-region will run the program and replace current buffer
         ;; with its stdout, that's why we need to run it in a temporary buffer
         (apply #'call-process-region (point-min) (point-max) flymake-ruff-program t t nil args))
