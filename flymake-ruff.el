@@ -70,7 +70,7 @@
                                  flymake-ruff-program-args))
                      flymake-ruff-program-args))
              (args (if code-filename
-                       (append `("--stdin-filename" ,code-filename) args)
+                       (append args `("--stdin-filename" ,code-filename))
                      args)))
         ;; call-process-region will run the program and replace current buffer
         ;; with its stdout, that's why we need to run it in a temporary buffer
