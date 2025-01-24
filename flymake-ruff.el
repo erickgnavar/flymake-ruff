@@ -46,7 +46,8 @@
 (defun flymake-ruff--get-config ()
   "Look for configuration files supported by Ruff in project root.
 When project is on remote host, cache config using `default-directory' as key."
-  (if (and (tramp-handle-file-remote-p default-directory))
+  (if (and (tramp-handle-file-remote-p (or buffer-file-name
+					   default-directory)))
       (when (not (seq-contains-p flymake-ruff--no-config-tramp-dirs default-directory #'string-equal))
 	(let ((cache-dir (expand-file-name 
                           (concat "ruff-config-" (sha1 default-directory))
