@@ -5,8 +5,8 @@
 Flymake plugin to run a linter for python buffers using [ruff](https://github.com/charliermarsh/ruff)
 
 > Make sure you have at least `ruff` `0.1.0` version because there is a [breaking change](https://github.com/astral-sh/ruff/blob/main/BREAKING_CHANGES.md#010) in the output format flag
-
 > If you are using a version of `ruff` < `0.5.0`, set flymake-ruff-program-args to  `'("--output-format" "text" "--exit-zero" "--quiet" "-")`
+
 ## Installation
 
 ### Cloning the repo
@@ -73,4 +73,3 @@ remove Pyright's "variable not accessed" notes, add the following:
 
 (advice-add 'eglot--report-to-flymake :filter-args #'my-filter-eglot-diagnostics))
 ```
-
