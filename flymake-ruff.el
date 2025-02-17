@@ -74,7 +74,7 @@
                      args))
              (default-directory (if (project-current)
                                     (project-root (project-current))
-                                    default-directory)))             
+                                    default-directory)))
         ;; call-process-region will run the program and replace current buffer
         ;; with its stdout, that's why we need to run it in a temporary buffer
         (apply #'call-process-region (point-min) (point-max) flymake-ruff-program t t nil args))
