@@ -33,11 +33,35 @@
   :group 'flymake-ruff
   :type '(list string))
 
+(defconst flymake-ruff-default-severity :warning
+  "Default Flymake severity for unmatched Ruff diagnostic codes.")
+
 (defvar flymake-ruff--output-regex "\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\([A-Za-z0-9]+\\):? \\(.*\\)")
 
 (defconst flymake-ruff--default-configs
   '(".ruff.toml" "ruff.toml" "pyproject.toml")
   "Default configuration files supported by Ruff.")
+
+(defconst flymake-ruff--severity-map
+  '(("E"    . :error)     ; Critical style errors
+    ("W"    . :warning)   ; Style warnings
+    ("F"    . :error)     ; Logical errors (pyflakes)
+    ("B"    . :warning)   ; Bugbears (best practices)
+    ("C90"  . :warning)   ; Complexity (mccabe)
+    ("N"    . :note)      ; Naming conventions
+    ("I"    . :note)      ; Import sorting
+    ("UP"   . :note)      ; Python upgrades (pyupgrade)
+    ("SIM"  . :note)      ; Simplification
+    ("PERF" . :warning))  ; Performance issues
+  "Mapping of Ruff diagnostic code prefixes to Flymake severities.")
+
+(defun flymake-ruff--severity-for-code (code)
+  "Return Flymake severity for Ruff CODE."
+  (let ((matched-prefix (seq-find (lambda (pfx)
+                                    (string-prefix-p pfx code))
+                                  (mapcar #'car flymake-ruff--severity-map))))
+    (or (cdr (assoc matched-prefix flymake-ruff--severity-map))
+        flymake-ruff-default-severity)))
 
 (defun flymake-ruff--check-buffer ()
   "Generate a list of diagnostics for the current buffer."
@@ -74,7 +98,7 @@
                      args))
              (default-directory (if (project-current)
                                     (project-root (project-current))
-                                    default-directory)))
+                                  default-directory)))
         ;; call-process-region will run the program and replace current buffer
         ;; with its stdout, that's why we need to run it in a temporary buffer
         (apply #'call-process-region (point-min) (point-max) flymake-ruff-program t t nil args))
@@ -87,8 +111,9 @@
                  (msg (match-string 5))
                  (description (format "Ruff: %s %s" code msg))
                  (region (flymake-diag-region code-buffer (1+ (- line start-line)) col))
+                 (severity (flymake-ruff--severity-for-code code))
                  (dx (flymake-make-diagnostic code-buffer (car region) (cdr region)
-                                              :error description)))
+                                              severity description)))
             (add-to-list 'dxs dx)))))
     dxs))
 
