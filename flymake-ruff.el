@@ -43,16 +43,17 @@
   "Default configuration files supported by Ruff.")
 
 (defconst flymake-ruff--severity-map
-  '(("E"    . :error)     ; Critical style errors
-    ("W"    . :warning)   ; Style warnings
-    ("F"    . :error)     ; Logical errors (pyflakes)
-    ("B"    . :warning)   ; Bugbears (best practices)
-    ("C90"  . :warning)   ; Complexity (mccabe)
-    ("N"    . :note)      ; Naming conventions
-    ("I"    . :note)      ; Import sorting
-    ("UP"   . :note)      ; Python upgrades (pyupgrade)
-    ("SIM"  . :note)      ; Simplification
-    ("PERF" . :warning))  ; Performance issues
+  '(("SyntaxError" . :error)     ; Syntax Errors
+    ("E"           . :error)     ; Critical style errors
+    ("W"           . :warning)   ; Style warnings
+    ("F"           . :error)     ; Logical errors (pyflakes)
+    ("B"           . :warning)   ; Bugbears (best practices)
+    ("C90"         . :warning)   ; Complexity (mccabe)
+    ("N"           . :note)      ; Naming conventions
+    ("I"           . :note)      ; Import sorting
+    ("UP"          . :note)      ; Python upgrades (pyupgrade)
+    ("SIM"         . :note)      ; Simplification
+    ("PERF"        . :warning))  ; Performance issues
   "Mapping of Ruff diagnostic code prefixes to Flymake severities.")
 
 (defun flymake-ruff--severity-for-code (code)
