@@ -36,24 +36,25 @@
 (defconst flymake-ruff-default-severity :warning
   "Default Flymake severity for unmatched Ruff diagnostic codes.")
 
-(defvar flymake-ruff--output-regex "\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\([A-Za-z0-9]+\\):? \\(.*\\)")
+(defvar flymake-ruff--output-regex "\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\([A-Za-z0-9-]+\\):? \\(.*\\)")
 
 (defconst flymake-ruff--default-configs
   '(".ruff.toml" "ruff.toml" "pyproject.toml")
   "Default configuration files supported by Ruff.")
 
 (defconst flymake-ruff--severity-map
-  '(("SyntaxError" . :error)     ; Syntax Errors
-    ("E"           . :error)     ; Critical style errors
-    ("W"           . :warning)   ; Style warnings
-    ("F"           . :error)     ; Logical errors (pyflakes)
-    ("B"           . :warning)   ; Bugbears (best practices)
-    ("C90"         . :warning)   ; Complexity (mccabe)
-    ("N"           . :note)      ; Naming conventions
-    ("I"           . :note)      ; Import sorting
-    ("UP"          . :note)      ; Python upgrades (pyupgrade)
-    ("SIM"         . :note)      ; Simplification
-    ("PERF"        . :warning))  ; Performance issues
+  '(("invalid-syntax" . :error)     ; Handle ruff's specific syntax error code
+    ("SyntaxError"    . :error)     ; Syntax Errors
+    ("E"              . :error)     ; Critical style errors
+    ("W"              . :warning)   ; Style warnings
+    ("F"              . :error)     ; Logical errors (pyflakes)
+    ("B"              . :warning)   ; Bugbears (best practices)
+    ("C90"            . :warning)   ; Complexity (mccabe)
+    ("N"              . :note)      ; Naming conventions
+    ("I"              . :note)      ; Import sorting
+    ("UP"             . :note)      ; Python upgrades (pyupgrade)
+    ("SIM"            . :note)      ; Simplification
+    ("PERF"           . :warning))  ; Performance issues
   "Mapping of Ruff diagnostic code prefixes to Flymake severities.")
 
 (defun flymake-ruff--severity-for-code (code)
