@@ -129,5 +129,25 @@
   "Run checker using REPORT-FN."
   (funcall report-fn (flymake-ruff--check-buffer)))
 
+;;;###autoload
+(defun flymake-ruff-goto-doc ()
+  "Browse to the documentation for the Ruff rule on a Flymake diagnostic line.
+Scans the Flymake diagnostic at point for a \"RULE123\"-style code and
+browses to its documentation at https://docs.astral.sh/ruff/rules."
+(interactive)
+(unless (or (derived-mode-p 'flymake-diagnostics-buffer-mode)
+            (derived-mode-p 'flymake-project-diagnostics-mode))
+    (user-error "Not in a Flymake diagnostics buffer"))
+  (let* ((id (tabulated-list-get-id))
+         (diag (or (plist-get id :diagnostic)
+                   (user-error "Bad Flymake ID: %S" id)))
+         (msg (flymake-diagnostic-text diag)))
+    (unless (string-match (rx "Ruff: " (group (1+ upper-case) (1+ digit)))
+                          msg)
+      (user-error "No Ruff rule (like Ruff: RULE123) in diagnostic: %s" msg))
+    (browse-url
+     (format "https://docs.astral.sh/ruff/rules/%s"
+             (match-string 1 msg)))))
+
 (provide 'flymake-ruff)
 ;;; flymake-ruff.el ends here
