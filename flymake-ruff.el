@@ -72,7 +72,11 @@
         (start-line (line-number-at-pos (point-min) t))
         (code-content (without-restriction
                         (buffer-substring-no-properties (point-min) (point-max))))
-        (dxs '()))
+        (dxs '())
+        ;; Capture buffer-local values before entering `with-temp-buffer',
+        ;; where the current buffer changes and these values would be lost.
+        (program flymake-ruff-program)
+        (program-args flymake-ruff-program-args))
     (with-temp-buffer
       (insert code-content)
       ;; check if the current buffer belongs to a project before
@@ -89,16 +93,15 @@
                        ;; for version > 0.5 the work "check" is
                        ;; included so we need to extract it and put it
                        ;; before --config argument
-                       (if (member "check" flymake-ruff-program-args)
+                       (if (member "check" program-args)
                            (append `("check" "--config" ,config)
-                                   (cdr flymake-ruff-program-args))
+                                   (cdr program-args))
                          (append `("--config" ,config)
-                                 flymake-ruff-program-args))
-                     flymake-ruff-program-args))
+                                 program-args))
+                     program-args))
              (args (if code-filename
                        (append args `("--stdin-filename" ,code-filename))
                      args))
-             (program flymake-ruff-program)
              (command (if (listp program) (car program) program))
              (args (if (listp program) (append (cdr program) args) args))
              (default-directory (if (project-current)
