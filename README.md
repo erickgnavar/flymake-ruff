@@ -71,5 +71,5 @@ remove Pyright's "variable not accessed" notes, add the following:
                              (s-ends-with? "is not accessed" (flymake-diagnostic-text d))))
                       (car diags))))
 
-(advice-add 'eglot--report-to-flymake :filter-args #'my-filter-eglot-diagnostics))
+(advice-add 'eglot--report-to-flymake :filter-args #'my-filter-eglot-diagnostics)
 ```
