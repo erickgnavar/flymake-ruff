@@ -117,7 +117,7 @@
                  (col (string-to-number (match-string 3)))
                  (code (match-string 4))
                  (msg (match-string 5))
-                 (description (format "Ruff: %s %s" code msg))
+                 (description (list "Ruff" code msg))
                  (region (flymake-diag-region code-buffer (1+ (- line start-line)) col))
                  (severity (flymake-ruff--severity-for-code code))
                  (dx (flymake-make-diagnostic code-buffer (car region) (cdr region)
